@@ -1,0 +1,29 @@
+# Documentation Index
+
+## Core
+
+- [README.md](../README.md)
+- [SECURITY.md](../SECURITY.md)
+- [CONTRIBUTING.md](../CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)
+- [ROADMAP.md](../ROADMAP.md)
+- [CHANGELOG.md](../CHANGELOG.md)
+
+## Governance
+
+- [GOVERNANCE.md](GOVERNANCE.md)
+- [RELEASE_STRATEGY.md](RELEASE_STRATEGY.md)
+- [REPOSITORY_HEALTH.md](REPOSITORY_HEALTH.md)
+- [WIKI_STRUCTURE.md](WIKI_STRUCTURE.md)
+- [SECRET_SCANNING_GUIDANCE.md](SECRET_SCANNING_GUIDANCE.md)
+- [REPOSITORY_METADATA.md](REPOSITORY_METADATA.md)
+
+## Architecture
+
+- [adr/README.md](adr/README.md)
+- [architecture/ARCHITECTURE_GUIDE.md](architecture/ARCHITECTURE_GUIDE.md)
+
+## Product and Operations
+
+- [product/PRODUCT_OVERVIEW.md](product/PRODUCT_OVERVIEW.md)
+- [operations/OPERATIONS_PLAYBOOK.md](operations/OPERATIONS_PLAYBOOK.md)
