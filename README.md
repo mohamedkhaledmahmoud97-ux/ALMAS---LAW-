@@ -1,4 +1,5 @@
 # ALMAS LAW
+<img width="1059" height="756" alt="Screenshot 2026-07-05 185212" src="https://github.com/user-attachments/assets/dcff89f3-855d-42e1-a421-14d6e0cbd6f2" />
 
 Enterprise-grade Arabic Legal Multi-Agent Intelligence Platform for trustworthy AI-powered legal workflows, multi-agent reasoning, and secure collaboration.
 
