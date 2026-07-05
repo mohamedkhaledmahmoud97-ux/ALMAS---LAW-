@@ -24,12 +24,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Prepare CodeQL placeholder
+        run: |
+          echo "CodeQL placeholder enabled for repository governance."
+          echo "No application source is present yet; analysis will be activated once code is introduced."
+
       - name: Initialize CodeQL
+        if: false
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           config-file: ./.github/codeql-config.yml
+
       - name: Autobuild
+        if: false
         uses: github/codeql-action/autobuild@v3
+
       - name: Perform CodeQL Analysis
+        if: false
         uses: github/codeql-action/analyze@v3
