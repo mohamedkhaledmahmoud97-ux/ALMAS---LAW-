@@ -1,11 +1,12 @@
 #                                                                                         ALMAS LAW
 <img width="1059" height="756" alt="Screenshot 2026-07-05 185212" src="https://github.com/user-attachments/assets/dcff89f3-855d-42e1-a421-14d6e0cbd6f2" />
 
-                                                                          Enterprise-grade Arabic Legal Multi-Agent Intelligence Platform for trustworthy AI-powered legal workflows, multi-agent reasoning, and secure collaboration.
+  
+  Enterprise-grade Arabic Legal Multi-Agent Intelligence Platform for trustworthy AI-powered legal workflows, multi-agent reasoning, and secure collaboration.
 
 ## Repository Purpose
 
-                  This repository has been reorganized into an enterprise-ready structure suitable for a commercial AI SaaS platform. It is intended to support architecture planning, product delivery, security governance, release operations, and cross-functional collaboration without introducing application code.
+This repository has been reorganized into an enterprise-ready structure suitable for a commercial AI SaaS platform. It is intended to support architecture planning, product delivery, security governance, release operations, and cross-functional collaboration without introducing application code.
 
 ## Repository Structure
 
