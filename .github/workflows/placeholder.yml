@@ -1,0 +1,11 @@
+name: Placeholder Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder step
+        run: echo "Workflow placeholder created for future CI/CD setup."
