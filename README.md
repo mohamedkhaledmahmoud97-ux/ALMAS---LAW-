@@ -39,3 +39,4 @@ This repository has been reorganized into an enterprise-ready structure suitable
 - Infrastructure and deployment
 - Monitoring and observability
 - Security and compliance
+<img width="1059" height="756" alt="image" src="https://github.com/user-attachments/assets/d5a4b610-c1dc-4ada-82fb-a0d345452009" />
