@@ -1,0 +1,29 @@
+name: Bug report
+description: Report a problem or unexpected behavior
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for helping improve ALMAS LAW.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the issue clearly.
+      placeholder: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: 1. 2. 3.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
