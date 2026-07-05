@@ -1,24 +1,41 @@
 # ALMAS LAW
 
-Enterprise-grade Arabic Legal Multi-Agent Intelligence Platform powered by AI, RAG, knowledge graphs, and explainable legal reasoning.
+Enterprise-grade Arabic Legal Multi-Agent Intelligence Platform for trustworthy AI-powered legal workflows, multi-agent reasoning, and secure collaboration.
 
-## Overview
+## Repository Purpose
 
-ALMAS LAW is being prepared as a professional open-source research and engineering initiative focused on legal intelligence, trustworthy AI, and structured reasoning for Arabic legal contexts.
+This repository has been reorganized into an enterprise-ready structure suitable for a commercial AI SaaS platform. It is intended to support architecture planning, product delivery, security governance, release operations, and cross-functional collaboration without introducing application code.
 
 ## Repository Structure
 
-- [README.md](README.md) — project overview and entry point
-- [SECURITY.md](SECURITY.md) — security reporting and handling policy
+- [README.md](README.md) — repository entry point
+- [SECURITY.md](SECURITY.md) — security reporting and handling
 - [CONTRIBUTING.md](CONTRIBUTING.md) — contribution workflow
-- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — community expectations
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — community standards
 - [CHANGELOG.md](CHANGELOG.md) — release history
-- [ROADMAP.md](ROADMAP.md) — development roadmap
+- [ROADMAP.md](ROADMAP.md) — delivery roadmap
+- [docs/product/PRODUCT_OVERVIEW.md](docs/product/PRODUCT_OVERVIEW.md) — product scope and goals
+- [docs/architecture/ARCHITECTURE_GUIDE.md](docs/architecture/ARCHITECTURE_GUIDE.md) — architecture planning
+- [docs/operations/OPERATIONS_PLAYBOOK.md](docs/operations/OPERATIONS_PLAYBOOK.md) — delivery and operations model
+- [.github/BRANCH_STRATEGY.md](.github/BRANCH_STRATEGY.md) — branch model
+- [.github/branch-protection.md](.github/branch-protection.md) — protection recommendations
+- [.github/LABELS.md](.github/LABELS.md) — labels for collaboration
+- [.github/MILESTONES.md](.github/MILESTONES.md) — initiative milestones
+- [.github/PROJECTS.md](.github/PROJECTS.md) — project boards
+- [.github/DISCUSSIONS.md](.github/DISCUSSIONS.md) — discussion categories
 
-## Governance
+## Collaboration Model
 
-This repository is being configured to support professional collaboration, issue tracking, discussions, and future implementation work.
+- Use feature branches for isolated work.
+- Merge into develop via pull requests.
+- Protect main and release branches.
+- Organize work by domain and platform stream.
 
-## Getting Started
+## Delivery Focus Areas
 
-Use this repository as a foundation for architecture, documentation, and implementation planning before contributing code.
+- Backend and API services
+- Authentication and authorization
+- Multi-agent orchestration
+- Infrastructure and deployment
+- Monitoring and observability
+- Security and compliance

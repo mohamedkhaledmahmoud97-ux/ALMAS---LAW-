@@ -1,0 +1,15 @@
+name: Infrastructure task
+description: Track deployment or infrastructure work
+title: "[INFRA] "
+labels: ["infrastructure"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment impact
+      required: true

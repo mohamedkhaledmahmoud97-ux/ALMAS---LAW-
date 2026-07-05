@@ -1,0 +1,15 @@
+name: Backend task
+description: Track backend or service work
+title: "[BACKEND] "
+labels: ["backend"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      required: true

@@ -1,0 +1,15 @@
+name: Security task
+description: Track security or compliance work
+title: "[SECURITY] "
+labels: ["security"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Risk or compliance impact
+      required: true
