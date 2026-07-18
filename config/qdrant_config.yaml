@@ -1,0 +1,54 @@
+# Qdrant configuration for ALMAS LAW
+# This is the production configuration for vector database
+
+log_level: info
+
+server:
+  http:
+    uri: 0.0.0.0:6333
+  grpc:
+    uri: 0.0.0.0:6334
+
+storage:
+  storage_path: ./storage
+  snapshots_path: ./snapshots
+  wal_path: ./wal
+  
+  # Performance settings
+  performance:
+    max_search_threads: 0
+    indexing_threads: 0
+    max_optimization_threads: 0
+
+  # Database snapshots
+  snapshots:
+    max_snapshots_to_keep: 3
+    snapshots_schedule: "0 3 * * *"  # Daily at 3 AM
+
+cluster:
+  enabled: false
+  # Uncomment for production clustering
+  # consensus:
+  #   tick_period_ms: 100
+
+# API settings
+api:
+  # Set read_only_api: true for read-only replicas
+  read_only_api: false
+
+# Health check settings
+health_checks:
+  disk_threshold_mb: 100
+
+# Enable CORS if needed for web clients
+web:
+  cors:
+    allow_origins:
+      - "http://localhost:3000"
+      - "http://localhost:8080"
+    allow_methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
