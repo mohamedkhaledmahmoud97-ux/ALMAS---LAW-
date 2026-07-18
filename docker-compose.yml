@@ -1,52 +1,266 @@
-version: '3.8'
+version: '3.9'
+
+# Production-ready ALMAS LAW Docker Compose Configuration
+# This file includes production-grade settings for:
+# - Resource limits and reservations
+# - Enhanced logging
+# - Restart policies
+# - Health checks
+# - Secrets management (use Docker secrets or external .env)
+# 
+# Usage: docker-compose -f docker-compose.prod.yml up -d
 
 services:
-  # 1. قاعدة البيانات التشغيلية والذاكرة العرضية (PostgreSQL + pgvector)
-  postgres_db:
+  # PostgreSQL 16 with pgvector - Production Configuration
+  postgres:
     image: pgvector/pgvector:pg16
-    container_name: almas_postgres
-    ports:
-      - "5432:5432"
+    container_name: almas-postgres
     environment:
-      POSTGRES_USER: almas_admin
-      POSTGRES_PASSWORD: StrongPassword2026!
-      POSTGRES_DB: almas_db
+      POSTGRES_DB: ${POSTGRES_DB:-almas_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_INITDB_ARGS: "-c shared_buffers=2GB -c max_connections=200 -c effective_cache_size=6GB -c work_mem=10MB"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts/postgres:/docker-entrypoint-initdb.d
+      - ./config/postgresql.conf:/etc/postgresql/postgresql.conf:ro
     networks:
-      - almas_network
+      - almas-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '2'
+          memory: 2G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  # 2. مستودع المتجهات القانونية (Qdrant)
-  qdrant_db:
+  # Qdrant Vector Database - Production Configuration
+  qdrant:
     image: qdrant/qdrant:latest
-    container_name: almas_qdrant
+    container_name: almas-qdrant
+    environment:
+      QDRANT_API_KEY: ${QDRANT_API_KEY:-qdrant_key}
     ports:
-      - "6333:6333"
-      - "6334:6334"
+      - "${QDRANT_PORT:-6333}:6333"
+      - "${QDRANT_GRPC_PORT:-6334}:6334"
     volumes:
       - qdrant_data:/qdrant/storage
+      - ./config/qdrant_config.yaml:/qdrant/config/production.yaml
     networks:
-      - almas_network
+      - almas-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  # 3. الرسم البياني للاستشهادات القانونية والمواد المرتبطة (Neo4j)
-  neo4j_db:
+  # Neo4j Graph Database - Production Configuration
+  neo4j:
     image: neo4j:latest
-    container_name: almas_neo4j
-    ports:
-      - "7474:7474"
-      - "7687:7687"
+    container_name: almas-neo4j
     environment:
-      NEO4J_AUTH: neo4j/StrongNeo4jPassword2026!
+      NEO4J_AUTH: ${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-neo4j}
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+      NEO4J_apoc_export_file_enabled: "true"
+      NEO4J_apoc_import_file_enabled: "true"
+      NEO4J_apoc_allow_url_open: "true"
+      NEO4J_dbms_memory_heap_initial__size: "2G"
+      NEO4J_dbms_memory_heap_max__size: "4G"
+      NEO4J_dbms_memory_pagecache_size: "2G"
+    ports:
+      - "${NEO4J_HTTP_PORT:-7474}:7474"
+      - "${NEO4J_BOLT_PORT:-7687}:7687"
     volumes:
       - neo4j_data:/data
+      - neo4j_logs:/logs
+      - ./init-scripts/neo4j:/scripts
     networks:
-      - almas_network
+      - almas-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '3'
+          memory: 6G
+        reservations:
+          cpus: '2'
+          memory: 3G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Redis 7 - Production Configuration
+  redis:
+    image: redis:7-alpine
+    container_name: almas-redis
+    command: >
+      redis-server 
+      --requirepass ${REDIS_PASSWORD:-redis}
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 1gb
+      --maxmemory-policy allkeys-lru
+      --tcp-backlog 511
+      --timeout 0
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - almas-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # MinIO Object Storage - Production Configuration
+  minio:
+    image: minio/minio:latest
+    container_name: almas-minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_BROWSER_REDIRECT_URL: "https://minio-console.example.com"
+    command: server /data --console-address ":9001"
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - almas-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Keycloak Identity and Access Management - Production Configuration
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: almas-keycloak
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_DB: postgres
+      KC_DB_URL: "jdbc:postgresql://postgres:5432/${KEYCLOAK_DB:-keycloak}"
+      KC_DB_USERNAME: ${POSTGRES_USER:-postgres}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      KC_DB_POOL_INITIAL_SIZE: 10
+      KC_DB_POOL_MAX_SIZE: 20
+      KC_PROXY: edge
+      KC_HTTP_ENABLED: "false"
+      KC_HTTPS_ENABLED: "true"
+      KC_HTTPS_PORT: 8443
+      KC_HOSTNAME_STRICT: "false"
+      KC_LOG_LEVEL: info
+      # For production, use:
+      # KC_HOSTNAME: keycloak.example.com
+      # KC_HOSTNAME_STRICT_HTTPS: "true"
+    ports:
+      - "${KEYCLOAK_PORT:-8080}:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./config/keycloak-realm.json:/opt/keycloak/data/import/realm.json:ro
+    networks:
+      - almas-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080;echo -e 'GET / HTTP/1.1\\r\\nHost: 127.0.0.1\\r\\nConnection: close\\r\\n\\r\\n' >&3;cat <&3 | grep -q 'HTTP/1.1 200 OK'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: start
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   postgres_data:
   qdrant_data:
   neo4j_data:
+  neo4j_logs:
+  redis_data:
+  minio_data:
+  keycloak_data:
 
 networks:
-  almas_network:
+  almas-network:
     driver: bridge
